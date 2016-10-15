@@ -1,0 +1,21 @@
+{
+  "name": "gulp_project2",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "Mark Peters"
+  ],
+  "license": "BSD-2-Clause",
+  "homepage": "",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^3.1.1",
+    "susy": "^2.2.12"
+  }
+}

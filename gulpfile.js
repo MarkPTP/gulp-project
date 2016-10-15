@@ -186,11 +186,14 @@ gulp.task('lint:scss', function() {
 
 
 
-var	Server	=	require('karma').Server;
-gulp.task('test',	function(done)	{
-		new	Server({				
-			configFile:	process.cwd()	+	'/karma.conf.js',				
-			singleRun:	true		},	done).start(); });
+var	Server = require('karma').Server;
+
+gulp.task('test', function(done)	{
+	new	Server({
+		configFile: process.cwd() + '/karma.conf.js',				
+		singleRun: true
+	}, done).start();
+});
 
 
 

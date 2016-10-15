@@ -1,0 +1,20 @@
+// styles.scss
+
+//import SUssy into our Sass file
+@import	"../bower_components/susy/sass/susy";
+
+@import "testing";
+
+
+
+.testing1 {
+  width: percentage(4/7);
+}
+
+.flex{
+	display:flex;
+}
+
+.susy-test{
+	@include span(2);
+}
