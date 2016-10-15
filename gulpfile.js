@@ -34,6 +34,8 @@ var jshint = require('gulp-jshint');
 var	jscs = require('gulp-jscs');
 //require sass-lint
 var	sassLint = require('gulp-sass-lint');
+//require karma sever
+var	Server = require('karma').Server;
 
 
 
@@ -47,7 +49,16 @@ gulp.task('default', function(callback){
 	['sass', 'nunjucks'],
 	['browserSync','watch'],
 	callback
-	)
+	);
+});
+
+//a replica of the default task tfor travis to run, removing tasks that travis doesn't need but would cause errors in travis
+gulp.task('dev-ci',	function(callback) {
+	runSequence('clean:dev',
+		['lint:js',	'lint:scss'],
+		['sass', 'nunjucks'],
+		callback
+	);
 });
 
 
@@ -185,8 +196,6 @@ gulp.task('lint:scss', function() {
 
 
 
-
-var	Server = require('karma').Server;
 
 gulp.task('test', function(done)	{
 	new	Server({

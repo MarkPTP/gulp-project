@@ -5,7 +5,9 @@ install:
 - "npm install"
 - "npm install bower -g"
 - "bower install"
+- "gem install scss_lint"
 script:
+- "gulp"
 - gulp test
 #configure Travis to load Firefox before running gulp test
 before_script:
