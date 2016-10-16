@@ -18,3 +18,9 @@
 .susy-test{
 	@include span(2);
 }
+
+
+.testing	{		
+//	Note:	$red	is	undefined,	and	Travis	should	show	an	error	here		
+color:	$red ;
+}
