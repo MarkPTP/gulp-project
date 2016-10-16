@@ -36,6 +36,8 @@ var	jscs = require('gulp-jscs');
 var	sassLint = require('gulp-sass-lint');
 //require karma sever
 var	Server = require('karma').Server;
+//gulp util for color coding error messages
+var	gutil = require('gulp-util');
 
 
 
@@ -104,16 +106,38 @@ gulp.task('sass', function() {
 
 
 //custom plumber function, to prevent the sass watch from working if errors found.
-function customPlumber(errTitle){
-	return	plumber({
+//function customPlumber(errTitle){
+//	return	plumber({
 		//use notify plugin to report error as windows toaster message
-		errorHandler:notify.onError({
+//		errorHandler:notify.onError({
 				//Customizing error title
-				title:errTitle || "Error running Gulp",
-				message: "Error: <%= error.message %>",
-		})
+//				title:errTitle || "Error running Gulp",
+//				message: "Error: <%= error.message %>",
+//		})
+//	});
+//}
+
+
+//	Custom	Plumber	function	for	catching	errors 
+function customPlumber(errTitle) {
+	if (process.env.CI)	{
+		return	plumber({
+		errorHandler: function(err) {
+		// Changes first line of error into red
+		throw Error(gutil.colors.red(err.message));
+		}
 	});
+}	else {
+		return plumber({
+			errorHandler: notify.onError({
+			// Customizing error title
+			title: errTitle	|| 'Error running Gulp',
+			message: 'Error: <%= error.message %>', })
+		});
+	}
 }
+
+
 
 //nunchucks task, the JSON.parse fs is used instead of require, require only reads a file once
 //so it can repeatdly read the json with this.
