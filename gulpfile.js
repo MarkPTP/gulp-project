@@ -38,8 +38,28 @@ var	sassLint = require('gulp-sass-lint');
 var	Server = require('karma').Server;
 //gulp util for color coding error messages
 var	gutil = require('gulp-util');
-
-
+//useref is used to concat js files.
+var useref = require('gulp-useref');
+//gulpIf conditionally checks first param and does the second
+var gulpIf = require('gulp-if');
+//uglify for minifying
+var uglify = require('gulp-uglify');
+//for seeing files in teh gulp filestream so as to debug
+var debug =require('gulp-debug');
+//cache certain files in gulp if they haven't changed
+var cached = require('gulp-cached');
+//add uncss which removes classes not used in the html
+var unCss = require('gulp-uncss');
+//cssnano minifys css
+var cssnano = require('gulp-cssnano');
+//imagemin for minifying images
+var imagemin = require('gulp-imagemin');
+//a different cache, used for optimizzing images
+var cache = require('gulp-cached');
+//gulp-rev programmatically change file names of assets.
+var rev = require('gulp-rev');
+//rev-replace replace assets with their respective versioned file names
+var revReplace = require('gulp-rev-replace');
 
 
 
@@ -228,6 +248,67 @@ gulp.task('test', function(done)	{
 	}, done).start();
 });
 
+
+
+
+gulp.task('useref',	function() {
+	return gulp.src('app/*.html')
+	.pipe(useref())
+	.pipe(cached('useref'))
+	.pipe(debug())
+	//if a js file in the gulp stream, use uglify on it
+	.pipe(gulpIf('*.js', uglify()))
+	//remove unsued selectors, but ignore removing certain ones, eg susy-test
+	.pipe(gulpIf('*.css', unCss({
+		html: ['app/*.html'],
+		ignore:['.susy-test']
+		})))
+	.pipe(gulpIf('*.css', cssnano()))
+	.pipe(gulpIf('*.js', rev()))
+	.pipe(gulpIf('*.css', rev()))
+	.pipe(revReplace())
+	.pipe(gulp.dest('dist'))
+});
+
+
+
+gulp.task('images',	function() {
+	return	gulp.src('app/images/**/*.+(png|jpg|jpeg|gif|svg)')
+	.pipe(cache(imagemin({
+		progressive:true,
+		interlaced:true,
+		optimizationLevels: 5,
+		multipass: true
+	})))
+	.pipe(gulp.dest('dist/images'))
+})
+
+gulp.task('cache:clear',function (callback) {
+	return cache.clearAll(callback)
+})
+
+
+
+gulp.task('fonts', function () {
+//copies entire folder
+	return gulp.src('app/fonts')
+	.pipe(gulp.dest('dist'))
+});
+
+gulp.task('clean:dist',	function (){
+	return del.sync(['dist']);
+})
+
+
+gulp.task('build', function(callback) {
+	runSequence(
+		['clean:dev', 'clean:dist'],
+		['lint:js', 'lint:scss'],
+		['sass', 'nunjucks'],
+		['useref', 'images', 'fonts', 'test'],
+		callback
+	);
+})
 
 
 

@@ -13,7 +13,8 @@
 
 	{%	include	"partials/navigation.nunjucks"	%}
 
-
+	<div	class="testing"></div>
+	
 	<div class="gallery">
 		<!--	Loops	through	"images"	array	-->
 		{% for image in	images %}
